@@ -1,6 +1,9 @@
 # pdf-search
 
-Run: ```node server.js```
+Run: 
+1. ```npm install```
+2. ```node server.js```
 
-Open: http://localhost:3000/
+Open Web-browser: 
+- http://localhost:3000/
 
