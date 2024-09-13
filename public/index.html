@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Search (PDF)</title>
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #search-form {
+            margin-bottom: 20px;
+        }
+        #results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #results-table th, #results-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #results-table th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>PDF Search</h1>
+    <div id="search-form">
+        <label for="search-keyword">Search Keyword:</label>
+        <input type="text" id="search-keyword" placeholder="Enter keyword">
+        <button onclick="search()">Search</button>
+    </div>
+
+    <table id="results-table">
+        <thead>
+            <tr>
+                <th>Ngày giao dịch</th>
+                <th>Ngày cập nhật hệ thống</th>
+                <th>Số tiền giao dịch gốc</th>
+                <th>Ghi nợ (VND)</th>
+                <th>Ghi có (VND)</th>
+                <th>Diễn giải giao dịch</th>
+            </tr>
+        </thead>
+        <tbody id="results-body">
+            <!-- Results will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        async function search() {
+            const endpoint = 'http://localhost:3000';
+            const keyword = document.getElementById('search-keyword').value;
+
+            if (!keyword) {
+                alert('Please enter a search keyword.');
+                return;
+            }
+
+            try {
+                const response = await fetch(endpoint + `/search?keyword=${encodeURIComponent(keyword)}`);
+                const data = await response.json();
+
+                const resultsBody = document.getElementById('results-body');
+                resultsBody.innerHTML = ''; // Clear previous results
+
+                data.forEach((transaction, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${transaction['Ngày giao dịch']}</td>
+                        <td>${transaction['Ngày cập nhật hệ thống']}</td>
+                        <td>${transaction['Số tiền giao dịch gốc']}</td>
+                        <td>${transaction['Ghi nợ (VND)']}</td>
+                        <td>${transaction['Ghi có (VND)']}</td>
+                        <td>${transaction['Diễn giải giao dịch']}</td>
+                    `;
+                    resultsBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching search results:', error);
+                alert('An error occurred while fetching results.');
+            }
+        }
+    </script>
+</body>
+</html>
